@@ -52,3 +52,31 @@ function convertMs(ms) {
   
     return { days, hours, minutes, seconds };
   }
+
+  function addLezingZero(value) {
+    return String(value).padStart(2, '0');
+  }
+
+  startButton.addEventListener('click', () => {
+    startButton.disabled = true;
+    datePickField.disabled = true;
+    const timeStarter = setInterval(() => {
+      const current = new Date();
+      const differenceInTime = userSelectedDate - currentTime;
+      if(differenceInTime <= 0) {
+        clearInterval(timeStarter);
+        datePickField.disabled = false;
+        daysSelect.textContent = "00";
+        hoursSelect.textContent = "00";
+        minutesSelect.textContent = "00";
+        secondsSelect.textContent = "00";
+        return;
+      }
+
+      const {days, hours, minutes, seconds} = convertMs(differenceInTime);
+      daysSelect.textContent = addLezingZero(days.toString());
+      hoursSelect.textContent = addLezingZero(hours.toString());
+      minutesSelect.textContent = addLezingZero(minutes.toString());
+      secondsSelect.textContent = addLezingZero(seconds.toString());
+    })
+  }, 1000)

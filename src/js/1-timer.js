@@ -1,18 +1,21 @@
-
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
-const startButton = document.querySelector('button [data-start]');
-const datePickField = document.querySelector('#datetime-picker');
-const daysSelect = document.querySelector('[data-days]');
-const hoursSelect = document.querySelector('[data-hours]');
-const minutesSelect = document.querySelector('[data-minutes]');
-const secondsSelect = document.querySelector('[data-seconds]');
+const refs = {
+  datePickField: document.querySelector('#datetime-picker'),
+  startButton: document.querySelector('[data-start]'),
+   days: document.querySelector('[data-days]'),
+   hours: document.querySelector('[data-hours]'),
+   minutes: document.querySelector('[data-minutes]'),
+   seconds: document.querySelector('[data-seconds]'),
+};
 
-let userSelectedDate = null;
-startButton.disabled = true;
+refs.startButton.disabled = true;
+
+let userSelectedDate;
+let intervalId;
 
 const options = {
   enableTime: true,
@@ -20,19 +23,43 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
+    console.log(selectedDates[0]);
     userSelectedDate = selectedDates[0];
-    if (userSelectedDate <= new Date) {
-      iziToast.error({
-title: 'Error',
-message: "Please choose a date in the future",
+    if (userSelectedDate < new Date()) {
+      iziToast.show({
+      title: 'Error',
+      message: "Please choose a date in the future",
+      titleColor: '#fff',
+      titleSize: '16px',
+      position: 'topRight',
       });  
+      refs.startButton.disabled = true;
     } else {
-      startButton.disabled = false;
+      userSelectedDate = selectedDates[0];
+      refs.startButton.disabled = false;
     }
   },
 };
 
-flatpickr(datePickField, options);
+flatpickr('#datetime-picker', options);
+
+
+refs.startButton.addEventListener('click', () => {
+  intervalId = setInterval(() => {
+    const differenceInTime = userSelectedDate - Date.now();
+    if(differenceInTime > 0) {
+    const time = convertMs(differenceInTime);
+    refs.days.textContent = time.days.toString().padStart(2, 0);
+    refs.hours.textContent = time.hours.toString().padStart(2, 0);
+    refs.minutes.textContent = time.minutes.toString().padStart(2, 0);
+    refs.seconds.textContent = time.seconds.toString().padStart(2, 0);
+  }else {
+    clearInterval(intervalId);
+  }
+    refs.datePickField.disabled = true;
+    refs.startButton.disabled = true;
+}, 1000)
+});
 
 function convertMs(ms) {
     // Number of milliseconds per unit of time
@@ -53,30 +80,5 @@ function convertMs(ms) {
     return { days, hours, minutes, seconds };
   }
 
-  function addLezingZero(value) {
-    return String(value).padStart(2, '0');
-  }
 
-  startButton.addEventListener('click', () => {
-    startButton.disabled = true;
-    datePickField.disabled = true;
-    const timeStarter = setInterval(() => {
-      const current = new Date();
-      const differenceInTime = userSelectedDate - currentTime;
-      if(differenceInTime <= 0) {
-        clearInterval(timeStarter);
-        datePickField.disabled = false;
-        daysSelect.textContent = "00";
-        hoursSelect.textContent = "00";
-        minutesSelect.textContent = "00";
-        secondsSelect.textContent = "00";
-        return;
-      }
-
-      const {days, hours, minutes, seconds} = convertMs(differenceInTime);
-      daysSelect.textContent = addLezingZero(days.toString());
-      hoursSelect.textContent = addLezingZero(hours.toString());
-      minutesSelect.textContent = addLezingZero(minutes.toString());
-      secondsSelect.textContent = addLezingZero(seconds.toString());
-    })
-  }, 1000)
+  

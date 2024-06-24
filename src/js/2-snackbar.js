@@ -21,17 +21,27 @@ form.addEventListener('submit', function(event){
         }, delay);
     });
     promise.then(delay => {
-        iziToast.success({
+        iziToast.show({
             title: 'Success',
             message: `✅ Fulfilled promise in ${delay}ms`,
-            position: "center"
+            messageColor: '#fff',
+            position: "center",
+            titleColor: '#fff',
+            titleSize: '16px',
+            backgroundColor: '#59a10d',
+            progressBar: '#326101',
         });
     })
 .catch(delay => {
-    iziToast.error({
+    iziToast.show({
         title: 'Error',
         message: `❌ Rejected promise in ${delay}ms`,
-        position: "center" 
+        position: 'center',
+        messageColor: '#fff',
+        titleColor: '#fff',
+        titleSize: '16px',
+        backgroundColor: '#ef4040',
+        progressBar: '#51b1b',
     });
 });
 });

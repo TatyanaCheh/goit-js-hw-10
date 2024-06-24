@@ -47,3 +47,7 @@ button {
     letter-spacing: 0.04em;
     color: #fff;
 }
+
+button:hover {
+    background: #6c8cff;
+}

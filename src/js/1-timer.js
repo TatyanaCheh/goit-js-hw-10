@@ -32,6 +32,8 @@ const options = {
       titleColor: '#fff',
       titleSize: '16px',
       position: 'topRight',
+      backgroundColor: '#ef4040',
+      progressBarColor: '#B51B1B',
       });  
       refs.startButton.disabled = true;
     } else {
